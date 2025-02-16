@@ -38,9 +38,23 @@ const deleteTodo = async (req, res) => {
     res.json(result);
 }
 
+const updateStatus = async (req, res) => {
+    if (!req?.body?.id) {
+        return res.status(400).json({ 'message': 'ID is required.' });
+    }   
+
+    const todo = await Todo.findOne({ _id: req.body.id }).exec();
+    if (!todo) {
+        return res.status(204).json({ "message": `No Todo matches ID ${req.body.id}.` });
+    }
+    if (req.body?.status) todo.status = req.body.status;
+    const result = await todo.save(); 
+    res.json(result);
+}
 
 module.exports = {
     handleNewTodo,
     getAllTodo,
-    deleteTodo
+    deleteTodo,
+    updateStatus
 };

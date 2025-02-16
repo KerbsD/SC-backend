@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const employeeSchema = new Schema({
     firstname: {
-        type: String,
+        type: Boolean,
         required: true
     },
     lastname: {

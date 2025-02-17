@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const todoSchema = new Schema({
+  currentUser:{
+    type: String
+  },
   taskName: {
     type: String,
     required: true,

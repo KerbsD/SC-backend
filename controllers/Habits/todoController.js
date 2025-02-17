@@ -1,7 +1,8 @@
 const Todo = require('../../model/Todo');
 
 const getAllTodo = async (req, res) => {
-    const todos = await Todo.find();
+    const currentUser = req.params.currentUser;
+    const todos = await Todo.find({ currentUser: currentUser });
     if (!todos) return res.status(204).json({ 'message': 'No todos currently,' });
     res.json(todos);
 }
@@ -11,6 +12,10 @@ const handleNewTodo = async (req, res) => {
         return res.status(401).json({ "message": "Task is required." })
     }
 
+    if (!req.body?.currentUser) {
+        return res.status(401).json({ "message": "Logged in user is required." })
+    }
+
     const allowedTypes = ["Healthy", "Neutral", "Bad"];
     if (!allowedTypes.includes(req.body.type)) {
         return res.status(400).json({ "message": "Invalid type provided." });
@@ -18,6 +23,7 @@ const handleNewTodo = async (req, res) => {
 
     try {
         const result = await Todo.create({
+            currentUser: req.body.currentUser,
             taskName: req.body.taskName,
             type: req.body.type
         })

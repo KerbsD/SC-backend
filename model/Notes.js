@@ -13,6 +13,9 @@ const noteSchema = new Schema({
     type: String,
     required: true
   },
+  noteBg: {
+    type: String
+  },
   createdAt: {
     type: Date,
     default: Date.now

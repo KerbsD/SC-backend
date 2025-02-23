@@ -27,7 +27,8 @@ const handleNoteCreate = async (req, res) => {
         const result = await Note.create({
             curUserId: req.body.curUserId,
             title: req.body.title,
-            content: req.body.content
+            content: req.body.content,
+            noteBg: req.body.noteBg
         })
         res.status(201).json(result);
     } catch (err) {

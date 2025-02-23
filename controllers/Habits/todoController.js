@@ -3,6 +3,7 @@ const Todo = require('../../model/Todo');
 const getAllTodo = async (req, res) => {
     const currentUser = req.params.currentUser;
     const todos = await Todo.find({ currentUser: currentUser });
+
     if (!todos) return res.status(204).json({ 'message': 'No todos currently,' });
     res.json(todos);
 }

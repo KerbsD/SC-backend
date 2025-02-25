@@ -6,11 +6,11 @@ const verifyRoles = require('../../middleware/verifyRoles');
 
 router.route('/')
     // .get(verifyRoles(ROLES_LIST.Admin), todoController.getAllTodo )
-    .post(verifyRoles(ROLES_LIST.Admin), todoController.handleNewTodo)
-    .delete(verifyRoles(ROLES_LIST.Admin), todoController.deleteTodo)
-    .put(verifyRoles(ROLES_LIST.Admin), todoController.updateStatus)
+    .post(verifyRoles(ROLES_LIST.User), todoController.handleNewTodo)
+    .delete(verifyRoles(ROLES_LIST.User), todoController.deleteTodo)
+    .put(verifyRoles(ROLES_LIST.User), todoController.updateStatus)
 
 router.route('/:currentUser')
-    .get(todoController.getAllTodo);
+    .get(verifyRoles(ROLES_LIST.User), todoController.getAllTodo);
 
 module.exports = router;

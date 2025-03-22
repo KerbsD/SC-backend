@@ -46,8 +46,9 @@ app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 
 app.use(verifyJWT);
-app.use('/users', require('./routes/api/users'));
 app.use('/shoes', require('./routes/api/shoes'));
+app.use('/users', require('./routes/api/users'));
+app.use('/carts', require('./routes/api/carts'));
 
 app.all('*', (req, res) => {
     res.status(404);

@@ -13,43 +13,39 @@ const CartSchema = new mongoose.Schema({
         ref: "Product", // Reference to Products Collection
         required: true,
       },
-      brand: {
-        type: String,
-        required: true
-      },
       size: {
         type: Number,
-        required: true,
-      },
-      color: {
-        type: String,
-        required: true,
+        required: true
       },
       quantity: {
         type: Number,
-        required: true,
-        min: 1,
+        required: true
       },
-      price: {
-        type: Number,
-        required: true,
-        min: 0
+      details: {
+        brand: {
+          type: String,
+          required: true
+        },
+        model: {
+          type: String,
+          required: true
+        },
+        color: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+          min: 0
+        }
       }
     },
   ],
-  total_price: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
   created_at: {
     type: Date,
     default: Date.now, // Automatically set current date
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now, // Automatically set current date
-  },
+  }
 });
 
 module.exports = mongoose.model("Cart", CartSchema);

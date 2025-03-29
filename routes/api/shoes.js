@@ -8,4 +8,7 @@ router.route('/')
     .post(verifyRoles(ROLES_LIST.User), shoeController.handleAddShoe)
     .get(verifyRoles(ROLES_LIST.User), shoeController.getAllShoe)
 
+router.route('/:id')
+    .get(verifyRoles(ROLES_LIST.User), shoeController.handleCurrentShoe)
+
 module.exports = router;

@@ -31,9 +31,9 @@ const shoeSchema = new mongoose.Schema({
         maxlength: 500, // Limit description length to 500 characters
         default: null
     },
-    // images: {
-    //     type: [String], // Array of image URLs or paths
-    // },
+    images: {
+        type: [String], // Array of image URLs or paths
+    },
     stocks: [{
         type: Map,
         of: Number // Maps sizes to stock quantities

@@ -10,7 +10,7 @@ const CartSchema = new mongoose.Schema({
     {
       product_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Product", // Reference to Products Collection
+        ref: "shoes", // Reference to Products Collection
         required: true,
       },
       size: {
@@ -38,6 +38,10 @@ const CartSchema = new mongoose.Schema({
           type: Number,
           required: true,
           min: 0
+        },
+        image: {
+          type: String,
+          required: true
         }
       }
     },

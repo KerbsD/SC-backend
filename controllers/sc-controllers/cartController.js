@@ -17,6 +17,7 @@ const handleCartItems = async (req, res) => {
         for (const item of items) {
             const { product_id } = item;
             const { size } = item;
+            const { quantity } = item;
 
             // Validate product_id
             if (!mongoose.Types.ObjectId.isValid(product_id)) {
@@ -34,18 +35,24 @@ const handleCartItems = async (req, res) => {
                 model: product.model,
                 color: product.color,
                 price: product.price,
+                image: product.images[0]
             }
+
+            console.log(details?.image)
 
             const availableSizes = product.size;
             const availability = availableSizes.includes(size) ? details.size = size : isSizeAvailable = false;
 
             const stocks = product.stocks.map(stockMap => Object.fromEntries(stockMap));
-            const sizeStock = stocks.find(stock => stock.size === availability);
+            const sizeStock = stocks.find(stock => stock.size == availability);
 
             if (sizeStock === undefined) {
                 console.log(`Size ${availability} is not in the list.`);
             } else if (sizeStock.stock === 0) {
                 console.log(`Size ${availability} is out of stock.`);
+                isStockAvailable = false;
+            } else if (quantity > sizeStock.stock) {
+                console.log(`Exceeds shoe quantity.`);
                 isStockAvailable = false;
             } else {
                 console.log(`Size ${availability} has stock: ${sizeStock.stock}.`);
@@ -58,6 +65,8 @@ const handleCartItems = async (req, res) => {
         for (const details of detailsArray) {
             deets = details
         }
+
+        console.log(deets)
 
         if (!isSizeAvailable) return res.status(400).json({ message: `Size not available.` });
 

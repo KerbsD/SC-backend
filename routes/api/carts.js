@@ -6,5 +6,7 @@ const verifyRoles = require('../../middleware/verifyRoles');
 
 router.route('/')
     .post(verifyRoles(ROLES_LIST.User), cartController.handleCartItems)
+    .get(verifyRoles(ROLES_LIST.User), cartController.getAllCartItems)
+    .delete(verifyRoles(ROLES_LIST.User), cartController.handleDeleteCartItem)
 
 module.exports = router;

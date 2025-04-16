@@ -5,7 +5,6 @@ const handleNewUser = async (req, res) => {
     const { user, email, number, pwd } = req.body;
     if (!user || !email || !number || !pwd) return res.status(400).json({ 'message': 'Fullname, Email, Mobile Number and Password are required.' });
 
-    // check for duplicate usernames in the db
     const duplicate = await User.findOne({
         $or: [
             { fullname: user }, // Check for duplicate fullname

@@ -19,6 +19,9 @@ const userSchema = new Schema({
         trim: true,
         match: /^\d+$/ // Regex to ensure only digits (no letters or special characters)
     },
+    address: {
+        type: String
+    },
     roles: {
         User: {
             type: Number,

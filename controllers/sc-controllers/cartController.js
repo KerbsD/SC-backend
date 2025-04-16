@@ -2,11 +2,22 @@ const Shoe = require('../../model/Shoe');
 const Cart = require('../../model/Cart');
 const mongoose = require("mongoose");
 
+const cartArray = [];
+
 const handleCartItems = async (req, res) => {
     const { user_id, items } = req.body;
 
-    if (!items?.length) return res.status(400).json({ message: "no bueno" });
+    if (!items?.length) return res.status(400).json({ message: "Invalid Item" });
     if (!user_id) return res.status(400).json({ message: "User ID is required." });
+
+    const transformedProducts = items.map(item => ({
+        ...item,
+        product_id: new mongoose.Types.ObjectId(item.product_id)
+    })); 
+
+    const test = cartArray?.includes(transformedProducts.size)
+
+    console.log(test)
 
     const detailsArray = [];
     let isStockAvailable;
@@ -40,7 +51,7 @@ const handleCartItems = async (req, res) => {
             const availableSizes = product.size;
             const availability = availableSizes.includes(size) ? details.size = size : isSizeAvailable = false;
 
-            const stocks = product.stocks.map(stockMap => Object.fromEntries(stockMap));
+            const stocks = product.stocks.map(stock => Object.fromEntries(stock));
             const sizeStock = stocks.find(stock => stock.size == availability);
 
             if (sizeStock === undefined) {
@@ -86,12 +97,6 @@ const handleCartItems = async (req, res) => {
     }
 };
 
-// const getAllCartItems = async (req, res) => {
-//     const cart = await Cart.find();
-//     if (!cart) return res.status(204).json({ 'message': 'Your bag is empty.' });
-//     res.json(cart);
-// };
-
 const getAllCartItems = async (req, res) => {
     try {
         if (!req?.query?.id) return res.status(400).json({ "message": 'User ID required.' });
@@ -108,23 +113,7 @@ const getAllCartItems = async (req, res) => {
             return res.status(404).json({ message: `Product not found with ID: ${product_id}` });
         }
 
-        const size = raw_cart?.map(cart => cart.items[0]?.size);
-        const stocks = product?.map(product => product.stocks.map(stockMap => Object.fromEntries(stockMap)))
-
-        const sizeStock = stocks?.map(stock => stock.find(stuk => stuk.size == size[0]))
-
-        // const exStock = sizeStock.map(stock => parseInt(stock.stock))
-
-        // console.log(exStock)
-
-        // const exStockArray = sizeStock.map((stock, index) => ({
-        //     size: size[index],
-        //     stock: parseInt(stock?.stock), // Ensure it's an integer
-        // }));
-
-        console.log(size)
-
-        const cart = await Cart.aggregate([ 
+        const cart = await Cart.aggregate([
             {
                 $match: {
                     user_id: new mongoose.Types.ObjectId(req.query.id), // Cast to ObjectId if necessary
@@ -143,7 +132,7 @@ const getAllCartItems = async (req, res) => {
                 $addFields: {
                     exceeds_stock: {
                         $cond: {
-                            if: { $gt: ["$total_quantity", "$max_order"] },
+                            if: { $gte: ["$total_quantity", "$max_order"] },
                             then: true,
                             else: false
                         }
@@ -153,8 +142,16 @@ const getAllCartItems = async (req, res) => {
         ]);
 
         if (!cart || cart?.length === 0) {
-            return res.status(200).json({ message: 'Your bag is empty.', cart: [] });
+            return res.status(200).json({ "message": 'Your bag is empty.', cart: [] });
         }
+
+        const mergedCart = cart?.map(item => ({
+            product_id: item._id.product_id,
+            size: item._id.size,
+            max_order: item.max_order,
+        }));
+
+        cartArray.push(mergedCart)
 
         res.json(cart);
     } catch (error) {
@@ -165,18 +162,20 @@ const getAllCartItems = async (req, res) => {
 
 const handleDeleteCartItem = async (req, res) => {
     if (!req?.body?.id && !req.body?.size) return res.status(400).json({ "message": 'Cart Item ID required.' });
+
     const cart = await Cart.findOne({ "items.product_id": req.body.id }).exec();
+
     if (!cart) {
         return res.status(200).json({ 'message': `Cart Item ID ${req.body.id} not found` });
     }
     const result = await Cart.deleteMany(
         {
             "items.product_id": req.body.id,
-            "items.size" : req.body.size
+            "items.size": req.body.size
         }
     );
     res.json({
-        message: "Item removed.",
+        message: "Item removed",
         result: result
     });
 }

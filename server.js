@@ -49,6 +49,7 @@ app.use(verifyJWT);
 app.use('/shoes', require('./routes/api/shoes'));   
 app.use('/users', require('./routes/api/users'));
 app.use('/carts', require('./routes/api/carts'));
+app.use('/orders', require('./routes/api/orders'))
 
 app.all('*', (req, res) => {
     res.status(404);

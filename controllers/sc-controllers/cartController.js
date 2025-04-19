@@ -2,22 +2,11 @@ const Shoe = require('../../model/Shoe');
 const Cart = require('../../model/Cart');
 const mongoose = require("mongoose");
 
-const cartArray = [];
-
 const handleCartItems = async (req, res) => {
     const { user_id, items } = req.body;
 
     if (!items?.length) return res.status(400).json({ message: "Invalid Item" });
     if (!user_id) return res.status(400).json({ message: "User ID is required." });
-
-    const transformedProducts = items.map(item => ({
-        ...item,
-        product_id: new mongoose.Types.ObjectId(item.product_id)
-    })); 
-
-    const test = cartArray?.includes(transformedProducts.size)
-
-    console.log(test)
 
     const detailsArray = [];
     let isStockAvailable;
@@ -29,12 +18,10 @@ const handleCartItems = async (req, res) => {
         for (const item of items) {
             const { product_id, size, quantity } = item;
 
-            // Validate product_id
             if (!mongoose.Types.ObjectId.isValid(product_id)) {
                 return res.status(400).json({ message: `Invalid product ID: ${product_id}` });
             }
 
-            // Find product
             const product = await Shoe.findOne({ _id: product_id }).exec();
             if (!product) {
                 return res.status(404).json({ message: `Product not found with ID: ${product_id}` });
@@ -144,14 +131,6 @@ const getAllCartItems = async (req, res) => {
         if (!cart || cart?.length === 0) {
             return res.status(200).json({ "message": 'Your bag is empty.', cart: [] });
         }
-
-        const mergedCart = cart?.map(item => ({
-            product_id: item._id.product_id,
-            size: item._id.size,
-            max_order: item.max_order,
-        }));
-
-        cartArray.push(mergedCart)
 
         res.json(cart);
     } catch (error) {

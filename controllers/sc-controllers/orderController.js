@@ -12,7 +12,7 @@ const handleNewOrder = async (req, res) => {
         const result = await Order.create({
             ordered_by,
             items: items,
-            total_amount,
+            total_amount,   
             payment_method
         })
 

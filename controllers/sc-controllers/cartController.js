@@ -93,6 +93,8 @@ const getAllCartItems = async (req, res) => {
             return res.status(404).json({ message: `Cart Items not found` });
         }
 
+        console.log(raw_cart);
+
         const productID = raw_cart?.map(cart => cart.items[0]?.product_id);
 
         const product = await Shoe.find({ _id: productID }).exec();

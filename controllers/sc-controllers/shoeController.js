@@ -39,7 +39,12 @@ const getAllShoe = async (req, res) => {
 
 const handleCurrentShoe = async (req, res) => {
     const { id } = req.params;
-    const shoeDetails = await Shoe.findById(id);    
+    const shoeDetails = await Shoe.findById(id);   
+    
+    const allStocksZero = shoeDetails.stocks.every(stock => stock.stock === 0);
+
+    console.log(allStocksZero);
+
     if (!shoeDetails) return res.status(204).json({ 'message': 'No shoe found.' });
     res.json(shoeDetails);
 }

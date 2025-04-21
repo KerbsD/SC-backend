@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const OrderSchema = new mongoose.Schema({
     ordered_by: {
+        user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         name: { type: String, required: true },
         email: { type: String, required: true },
         address: { type: String, required: true },
